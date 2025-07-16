@@ -1,0 +1,7 @@
+fastapi
+aiohttp
+beautifulsoup4
+lxml
+pandas
+uvicorn
+pydantic
