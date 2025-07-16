@@ -137,6 +137,12 @@ async def scrape_endpoint(request: ScrapeRequest):
         logger.error(f"Endpoint error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "timestamp": datetime.now().isoformat()}
+
 # For local testing
 if __name__ == "__main__":
     import uvicorn
