@@ -42,7 +42,7 @@ def get_headers():
 async def scrape_product_data(session: aiohttp.ClientSession, asin: str, country_code: str):
     url = f"https://www.amazon.{country_code}/dp/{asin}?th=1&psc=1"
     data = {"asin": asin, "country_code": country_code}
-
+    
     try:
         async with session.get(url, headers=get_headers()) as response:
             if response.status != 200:
@@ -111,7 +111,7 @@ async def process_asins(asins: List[str], country_code: str):
             tasks.append(scrape_negative_reviews(session, asin, country_code))
             await asyncio.sleep(random.uniform(0.2, 0.5))  # Stagger requests
         results = await asyncio.gather(*tasks, return_exceptions=True)
-
+        logger.info(results)
         # Combine product data and reviews
         combined_results = []
         for i in range(0, len(results), 2):
@@ -143,11 +143,8 @@ async def scrape_endpoint(request: ScrapeRequest):
 async def health_check():
     return {"status": "ok", "timestamp": datetime.now().isoformat()}
 
-# For local testing
 if __name__ == "__main__":
     import uvicorn
-    test_asins = ["B0CGNFT16Y", "B08BS57K7V"]
-    request = ScrapeRequest(asins=test_asins, country_code="com.au")
     asyncio.run(
         uvicorn.run(app, host="0.0.0.0", port=8000)
     )
